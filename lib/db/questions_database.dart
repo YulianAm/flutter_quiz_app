@@ -5,11 +5,15 @@ import 'package:sqflite/sqflite.dart';
 String path = 'my_db.db';
 
 class QuestionsDatabase {
-  static final QuestionsDatabase instance = QuestionsDatabase._init();
+  static final QuestionsDatabase instance = QuestionsDatabase._internal();
+
+  factory QuestionsDatabase() {
+    return instance;
+  }
+
+  QuestionsDatabase._internal();
 
   static Database _database;
-
-  static QuestionsDatabase _init() {}
 
   Future<Database> get database async {
     if (_database != null) return _database;
@@ -20,6 +24,7 @@ class QuestionsDatabase {
 
   Future<Database> _initDb(String filePath) async {
     final dbPath = await getDatabasesPath();
+    print(dbPath);
     final path = dbPath + filePath;
 
     return await openDatabase(path, version: 1, onCreate: _createDb);
@@ -42,6 +47,45 @@ class QuestionsDatabase {
     final db = await instance.database;
 
     final id = await db.insert(tableUsers, user.toJson());
+
+    return user.copy(
+        id: id, userName: user.userName, createTime: user.createTime);
+  }
+
+  Future<User> get(int id) async {
+    final db = await instance.database;
+
+    final maps = await db.query(tableUsers,
+        columns: UserFields.values,
+        where: '${UserFields.id} = ?',
+        whereArgs: [id]);
+
+    if (maps.isNotEmpty) {
+      return User.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found!');
+    }
+  }
+
+  Future<User> update(User user) async {
+    final db = await instance.database;
+
+    final id = await db.update(
+      tableUsers,
+      user.toJson(),
+      where: '${UserFields.id} = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  Future<User> delete(User user) async {
+    final db = await instance.database;
+
+    final id = await db.delete(
+      tableUsers,
+      where: '${UserFields.id} = ?',
+      whereArgs: [user.id],
+    );
 
     return user.copy(
         id: id, userName: user.userName, createTime: user.createTime);

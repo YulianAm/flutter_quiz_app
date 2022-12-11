@@ -1,6 +1,8 @@
+import 'package:first_app/db/questions_database.dart';
 import 'package:flutter/material.dart';
 import './quiz.dart';
 import './result.dart';
+import 'models/User.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,6 +10,19 @@ class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _MyAppState();
+  }
+}
+
+Future createUserLog() async {
+  try {
+    var user =
+        QuestionsDatabase().create(new User(1213131, 'Yulian', DateTime.now()));
+
+    var userGet = await QuestionsDatabase().get(1213131);
+
+    print(user);
+  } catch (e) {
+    new Exception();
   }
 }
 
@@ -49,6 +64,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _questionIndex = 0;
       _totalScore = 0;
+      var user = createUserLog();
     });
   }
 
@@ -56,6 +72,8 @@ class _MyAppState extends State<MyApp> {
     _totalScore += score;
 
     setState(() {
+      var user = createUserLog();
+      print(user);
       _questionIndex = _questionIndex + 1;
     });
     print(_questionIndex);
