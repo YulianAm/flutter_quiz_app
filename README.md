@@ -1,6 +1,8 @@
-# first_app
+# quiz app 
 
-A new Flutter project.
+an app that displayes questions for a user to answer and calculates score based on his answers.
+including database access layer - sqflite 
+
 
 ## Getting Started
 
