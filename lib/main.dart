@@ -2,6 +2,7 @@ import 'package:first_app/db/questions_database.dart';
 import 'package:flutter/material.dart';
 import './quiz.dart';
 import './result.dart';
+import 'login.dart';
 import 'models/User.dart';
 
 void main() => runApp(MyApp());
@@ -27,6 +28,8 @@ Future createUserLog() async {
 }
 
 class _MyAppState extends State<MyApp> {
+  static final homeRouteName = "/";
+
   final _questions = const [
     {
       'questionText': 'What\'s your favorite color ?',
@@ -60,46 +63,44 @@ class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
   var _totalScore = 0;
 
-  void _resetQuiz() {
+  void _resetQuiz(BuildContext context) {
     setState(() {
       _questionIndex = 0;
       _totalScore = 0;
-      var user = createUserLog();
     });
+    //Navigator.of(context).pop(Result.routeName);
   }
 
-  void _answerQuestion(int score) {
+  void _answerQuestion(int score, BuildContext context) {
     _totalScore += score;
 
     setState(() {
-      var user = createUserLog();
-      print(user);
       _questionIndex = _questionIndex + 1;
+
+      print(_questionIndex);
+
+      if (_questionIndex < _questions.length) {
+        print('We have more questions!');
+      } else {
+        print('No more questions! navigating to result');
+        Navigator.of(context).pushNamed(Result.routeName);
+      }
     });
-    print(_questionIndex);
-    if (_questionIndex < _questions.length) {
-      print('We have more questions!');
-    } else {
-      print('No more questions!');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('My First App'),
-        ),
-        body: _questionIndex < _questions.length
-            ? Quiz(
-                answerQuestion: _answerQuestion,
-                questionIndex: _questionIndex,
-                questions: _questions,
-                totalScore: _totalScore,
-              )
-            : Result(_totalScore, _resetQuiz),
-      ),
-    );
+    return MaterialApp(initialRoute: '/', routes: {
+      homeRouteName: (context) => new Scaffold(body: Login()),
+      Quiz.routeName: (contex) => new Scaffold(
+              body: Quiz(
+            answerQuestion: _answerQuestion,
+            questionIndex: _questionIndex,
+            questions: _questions,
+            totalScore: _totalScore,
+          )),
+      Result.routeName: (contex) =>
+          new Scaffold(body: Result(_totalScore, _resetQuiz))
+    });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Result extends StatelessWidget {
+  static final routeName = "/result";
   final int resultScore;
   final Function resetHandler;
 
@@ -34,7 +35,7 @@ class Result extends StatelessWidget {
             child: Text(
               'Restart Quiz!',
             ),
-            onPressed: resetHandler,
+            onPressed: resetHandler(context),
           ),
         ],
       ),
