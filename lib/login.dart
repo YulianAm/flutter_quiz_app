@@ -1,10 +1,38 @@
+import 'dart:math';
+
 import 'package:first_app/quiz.dart';
 import 'package:flutter/material.dart';
 
-class Login extends StatelessWidget {
-  Map<String, String> args = {'userEmail': 'empty'};
+import 'db/questions_database.dart';
+import 'models/User.dart';
 
+class Login extends StatelessWidget {
+  bool isLogged = false;
   TextEditingController _controllerUserEmail = TextEditingController();
+
+  Future createUserLog() async {
+    var random = new Random().nextInt(100);
+
+    if (!isLogged) {
+      try {
+        var user = QuestionsDatabase().create(
+            new User(random, _controllerUserEmail.text, DateTime.now()));
+
+        user = QuestionsDatabase().get(random);
+
+        print("user $user is logged!");
+
+        isLogged = true;
+      } catch (e) {
+        new Exception();
+      }
+    }
+  }
+
+  void loginAndNavigate(BuildContext context) {
+    Navigator.of(context)
+        .pushNamed(Quiz.routeName, arguments: _controllerUserEmail.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +70,8 @@ class Login extends StatelessWidget {
               ),
               // Login button
               ElevatedButton(
-                child: Text('Login'),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(Quiz.routeName,
-                      arguments: _controllerUserEmail.text);
-                },
-              ),
+                  child: Text('Login'),
+                  onPressed: () => loginAndNavigate(context)),
             ],
           ),
         ),

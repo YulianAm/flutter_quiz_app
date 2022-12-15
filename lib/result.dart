@@ -25,6 +25,7 @@ class Result extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             resultPhrase,
@@ -35,7 +36,7 @@ class Result extends StatelessWidget {
             child: Text(
               'Restart Quiz!',
             ),
-            onPressed: resetHandler(context),
+            onPressed: () => resetHandler(context),
           ),
         ],
       ),

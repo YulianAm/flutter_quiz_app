@@ -1,9 +1,7 @@
-import 'package:first_app/db/questions_database.dart';
 import 'package:flutter/material.dart';
 import './quiz.dart';
 import './result.dart';
 import 'login.dart';
-import 'models/User.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,19 +9,6 @@ class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _MyAppState();
-  }
-}
-
-Future createUserLog() async {
-  try {
-    var user =
-        QuestionsDatabase().create(new User(1213131, 'Yulian', DateTime.now()));
-
-    var userGet = await QuestionsDatabase().get(1213131);
-
-    print(user);
-  } catch (e) {
-    new Exception();
   }
 }
 
@@ -68,7 +53,7 @@ class _MyAppState extends State<MyApp> {
       _questionIndex = 0;
       _totalScore = 0;
     });
-    //Navigator.of(context).pop(Result.routeName);
+    Navigator.of(context).pop(Result.routeName);
   }
 
   void _answerQuestion(int score, BuildContext context) {
@@ -90,7 +75,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
+    return MaterialApp(initialRoute: homeRouteName, routes: {
       homeRouteName: (context) => new Scaffold(body: Login()),
       Quiz.routeName: (contex) => new Scaffold(
               body: Quiz(
